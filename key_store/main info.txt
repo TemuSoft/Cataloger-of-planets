@@ -1,0 +1,7 @@
+Name: Cataloger of planets
+password: ta1ge7fp12t5OP2
+Alias: cataloger_of_planets
+Package ID: com.Catalogerofplanets.COP2008
+Application version: 1.0
+Build version: 1
+Min SDK version: 26
