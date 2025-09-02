@@ -117,8 +117,6 @@ public class SpaceActivity extends AppCompatActivity {
     private void showPopup(View anchorView, String message) {
         View popupView = LayoutInflater.from(this).inflate(R.layout.popup_info, null);
 
-        TextView popupText = popupView.findViewById(R.id.popupText);
-        popupText.setText(message);
 
         PopupWindow popupWindow = new PopupWindow(popupView, android.widget.LinearLayout.LayoutParams.WRAP_CONTENT, android.widget.LinearLayout.LayoutParams.WRAP_CONTENT, true);
 

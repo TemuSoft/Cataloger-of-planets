@@ -4,4 +4,22 @@
     <string name="coins">Coins:</string>
     <string name="start">Start</string>
     <string name="chapter">Chapter</string>
+    <string name="planet">Planet</string>
+    <string name="easy">Easy</string>
+    <string name="award">Award:</string>
+    <string name="explore">Explore</string>
+    <string name="buy_equipment_in_the_shop">Buy equipment in the shop</string>
+    <string name="completed">Completed</string>
+    <string name="play_again">Play Again</string>
+    <string name="ready">Ready</string>
+    <string name="closed">Closed</string>
+    <string name="menu">Menu</string>
+    <string name="stage_completed">Stage Completed!</string>
+    <string name="go_to_planets">Go To Planets</string>
+    <string name="game_over">Game Over</string>
+    <string name="try_again">Try Again</string>
+    <string name="store_dis">To explore other planets, you need to purchase equipment.</string>
+    <string name="enviro_suit">Enviro-suit</string>
+    <string name="cost_coins">Cost Coins:</string>
+    <string name="buy">Buy</string>
 </resources>
