@@ -27,7 +27,7 @@
             android:theme="@style/text18Theme" />
 
         <ImageView
-            android:id="@+id/planet"
+            android:id="@+id/planet_won"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -35,7 +35,7 @@
             android:src="@drawable/cha_0_0" />
 
         <TextView
-            android:id="@+id/coin"
+            android:id="@+id/coin_won"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
@@ -43,7 +43,7 @@
             android:theme="@style/text18Theme" />
 
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/go_to_planets"
+            android:id="@+id/go_to_planets_won"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/dark_rect"
@@ -53,7 +53,7 @@
             android:theme="@style/text14Theme" />
 
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/menu"
+            android:id="@+id/menu_won"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="70dp"
