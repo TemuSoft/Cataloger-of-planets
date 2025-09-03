@@ -22,4 +22,6 @@
     <string name="enviro_suit">Enviro-suit</string>
     <string name="cost_coins">Cost Coins:</string>
     <string name="buy">Buy</string>
+    <string name="your_combination">Your Combination</string>
+    <string name="atmosphere">Atmosphere</string>
 </resources>
