@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
         isMute = sharedPreferences.getBoolean("isMute", false);
         soundMute = sharedPreferences.getBoolean("soundMute", false);
 
-        all_planets_explored = sharedPreferences.getInt("planets_explored", 0);
+        all_planets_explored = sharedPreferences.getInt("item_index", 0);
         all_coin = sharedPreferences.getInt("coin", 0);
 
         setContentView(R.layout.activity_main);

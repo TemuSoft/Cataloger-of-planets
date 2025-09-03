@@ -123,7 +123,7 @@ public class GroundActivity extends AppCompatActivity implements View.OnTouchLis
         planet.setImageResource(im);
         coin.setText("+" + groundView.score + " " + getResources().getString(R.string.coins));
 
-        editor.putInt("coin", all_coin + groundView.score);
+        editor.putInt("ground_coin", groundView.score);
         editor.apply();
 
         go_to_planets.setOnClickListener(View -> {

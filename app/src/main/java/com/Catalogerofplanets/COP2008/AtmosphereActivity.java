@@ -151,7 +151,7 @@ public class AtmosphereActivity extends AppCompatActivity implements View.OnTouc
         planet.setImageResource(im);
         coin.setText("+" + atmosphereView.score + " " + getResources().getString(R.string.coins));
 
-        editor.putInt("coin", all_coin + atmosphereView.score);
+        editor.putInt("atmosphere_coin", atmosphereView.score);
         editor.apply();
 
         go_to_planets.setOnClickListener(View -> {

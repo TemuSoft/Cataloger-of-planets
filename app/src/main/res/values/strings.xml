@@ -24,4 +24,8 @@
     <string name="buy">Buy</string>
     <string name="your_combination">Your Combination</string>
     <string name="atmosphere">Atmosphere</string>
+    <string name="ground">Ground</string>
+    <string name="core">Core</string>
+    <string name="next">Next</string>
+    <string name="shop">Shop</string>
 </resources>

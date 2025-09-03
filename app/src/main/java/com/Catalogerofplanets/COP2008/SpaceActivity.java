@@ -40,7 +40,7 @@ public class SpaceActivity extends AppCompatActivity {
         isMute = sharedPreferences.getBoolean("isMute", false);
         soundMute = sharedPreferences.getBoolean("soundMute", false);
         lang = sharedPreferences.getString("lang", "");
-        all_planets_explored = sharedPreferences.getInt("planets_explored", 0);
+        all_planets_explored = sharedPreferences.getInt("item_index", 0);
         all_coin = sharedPreferences.getInt("coin", 0);
 
         setContentView(R.layout.activity_space);
@@ -68,6 +68,14 @@ public class SpaceActivity extends AppCompatActivity {
             active_space++;
             process_UI();
         });
+
+        editor.putInt("atmosphere_coin", 0);
+        editor.putInt("ground_coin", 0);
+        editor.putInt("core_coin", 0);
+        editor.putString("atmosphere_status", "ready");
+        editor.putString("ground_status", "ready");
+        editor.putString("core_status", "ready");
+        editor.apply();
 
         process_UI();
     }
