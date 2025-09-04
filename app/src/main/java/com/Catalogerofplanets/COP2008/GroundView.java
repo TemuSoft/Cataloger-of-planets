@@ -9,7 +9,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.view.View;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -114,17 +113,22 @@ public class GroundView extends View {
 
         setSpeed();
 
-        ArrayList<Integer> data = new ArrayList<>();
-        for (int i = 0; i < 4; i++)
-            data.add(i);
-        Collections.shuffle(data);
-        Collections.shuffle(data);
+        ArrayList<Integer> data1 = new ArrayList<>();
+        ArrayList<Integer> data2 = new ArrayList<>();
+        for (int i = 0; i < 4; i++) {
+            data1.add(i);
+            data2.add(i);
+        }
+        Collections.shuffle(data1);
+        Collections.shuffle(data2);
+        Collections.shuffle(data1);
+        Collections.shuffle(data2);
 
-        for (int i = 0; i < data.size(); i++)
-            initialize_data(data.get(i));
+        for (int i = 0; i < data1.size(); i++)
+            initialize_data(data1.get(i), data2.get(i));
     }
 
-    private void initialize_data(Integer index) {
+    private void initialize_data(Integer index1, Integer index2) {
         int s = rect_data.size();
         int rx = init_x_gr;
         int ry = init_y_gr + (margin + gr_h) * s;
@@ -139,12 +143,12 @@ public class GroundView extends View {
         // origin data
         data.add(x);
         data.add(y);
-        data.add(index);
+        data.add(index1);
 
         // will update on play
         data.add(x);
         data.add(y);
-        data.add(index);
+        data.add(index1);
         rect_data.add(data);
 
 
@@ -161,12 +165,12 @@ public class GroundView extends View {
         // origin data
         data.add(x);
         data.add(y);
-        data.add(index);
+        data.add(index2);
 
         // will update on play
         data.add(x);
         data.add(y);
-        data.add(index);
+        data.add(index2);
         eclipse_data.add(data);
 
     }

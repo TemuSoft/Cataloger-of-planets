@@ -6,13 +6,11 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -40,6 +38,7 @@ public class StatusActivity extends AppCompatActivity {
     private int atmosphere_coin, ground_coin, core_coin;
     private String atmosphere_status, ground_status, core_status;
     private int lastLevelActive, playLevel;
+    private int total_explored;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,7 +83,7 @@ public class StatusActivity extends AppCompatActivity {
             finish();
         });
 
-        planets_explored.setText(getResources().getString(R.string.planets_explored) + " " + (lastLevelActive - 1));
+        planets_explored.setText(getResources().getString(R.string.planets_explored) + " " + total_explored);
         coin.setText(getResources().getString(R.string.coins) + " " + all_coin);
 
         int group_index = (playLevel - 1) % Player.planet_devider;
@@ -103,6 +102,7 @@ public class StatusActivity extends AppCompatActivity {
         item_index = sharedPreferences.getInt("item_index", 0);
         lastLevelActive = sharedPreferences.getInt("lastLevelActive", 1);
         playLevel = sharedPreferences.getInt("playLevel", 1);
+        total_explored = sharedPreferences.getInt("total_explored", 0);
     }
 
     private void set_UI() {

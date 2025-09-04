@@ -27,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
     private Intent intent;
     private int all_coin;
     private int lastLevelActive, playLevel;
+    private int total_explored;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
         soundMute = sharedPreferences.getBoolean("soundMute", false);
         lastLevelActive = sharedPreferences.getInt("lastLevelActive", 1);
         playLevel = sharedPreferences.getInt("playLevel", 1);
+        total_explored = sharedPreferences.getInt("total_explored", 0);
 
         all_coin = sharedPreferences.getInt("coin", 0);
 
@@ -54,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
             finish();
         });
 
-        planets_explored.setText(getResources().getString(R.string.planets_explored) + " " + (lastLevelActive - 1));
+        planets_explored.setText(getResources().getString(R.string.planets_explored) + " " + total_explored);
         coin.setText(getResources().getString(R.string.coins) + " " + all_coin);
     }
 

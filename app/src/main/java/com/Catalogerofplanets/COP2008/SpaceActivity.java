@@ -34,7 +34,7 @@ public class SpaceActivity extends AppCompatActivity {
     private int lastLevelActive, playLevel;
     private int all_coin, award_coin;
     private int[][] images = new int[][]{{R.drawable.cha_0_0, R.drawable.cha_0_1, R.drawable.cha_0_2, R.drawable.cha_0_3}, {R.drawable.cha_1_0, R.drawable.cha_1_1, R.drawable.cha_1_2, R.drawable.cha_1_3}, {R.drawable.cha_2_0, R.drawable.cha_2_1, R.drawable.cha_2_2, R.drawable.cha_2_3}, {R.drawable.cha_3_0, R.drawable.cha_3_1, R.drawable.cha_3_2, R.drawable.cha_3_3},};
-
+    private int total_explored;
     private int item_one_purchased, item_two_purchased, item_three_purchased;
 
 
@@ -53,8 +53,23 @@ public class SpaceActivity extends AppCompatActivity {
         item_one_purchased = sharedPreferences.getInt("item_one_purchased", 0);
         item_two_purchased = sharedPreferences.getInt("item_two_purchased", 0);
         item_three_purchased = sharedPreferences.getInt("item_three_purchased", 0);
+        total_explored = sharedPreferences.getInt("total_explored", 0);
 
-        award_coin = (playLevel * 10 + 100) * 3;
+        int tt = 0;
+        int all = item_one_purchased + item_two_purchased + item_three_purchased + 1;
+        for (int i = 1; i <= all; i++) {
+            boolean already_explored0 = sharedPreferences.getBoolean("explored_" + i + "" + 0, false);
+            boolean already_explored1 = sharedPreferences.getBoolean("explored_" + i + "" + 1, false);
+            boolean already_explored2 = sharedPreferences.getBoolean("explored_" + i + "" + 2, false);
+            boolean already_explored3 = sharedPreferences.getBoolean("explored_" + i + "" + 3, false);
+
+            if (already_explored0 && already_explored1 && already_explored2 && already_explored3)
+                tt++;
+        }
+
+        total_explored = tt;
+        editor.putInt("total_explored", total_explored);
+        editor.apply();
 
         setContentView(R.layout.activity_space);
 
@@ -111,15 +126,15 @@ public class SpaceActivity extends AppCompatActivity {
             playLevel = 1;
             backward.setVisibility(INVISIBLE);
         }
-        if (playLevel >= lastLevelActive) {
-            playLevel = lastLevelActive;
+        if (playLevel >= item_one_purchased + item_two_purchased + item_three_purchased + 1) {
+            playLevel = item_one_purchased + item_two_purchased + item_three_purchased + 1;
             forward.setVisibility(INVISIBLE);
         }
 
         chapter.setText(getResources().getString(R.string.chapter) + " " + playLevel);
 
         load_spaces();
-        planets_explored.setText(getResources().getString(R.string.planets_explored) + " " + (lastLevelActive - 1));
+        planets_explored.setText(getResources().getString(R.string.planets_explored) + " " + total_explored);
         coin.setText(getResources().getString(R.string.coins) + " " + all_coin);
     }
 
@@ -157,6 +172,7 @@ public class SpaceActivity extends AppCompatActivity {
 
         planet.setText(getResources().getString(R.string.planet) + " " + index);
         mode.setText(type);
+        award_coin = (playLevel * 10 + 100) * 3;
         award.setText(getResources().getString(R.string.award) + " " + award_coin);
 
         boolean is_valid = item_one_purchased + item_two_purchased + item_three_purchased >= index;

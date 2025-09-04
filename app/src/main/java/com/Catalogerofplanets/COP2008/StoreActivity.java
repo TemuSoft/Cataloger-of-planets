@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -32,6 +33,7 @@ public class StoreActivity extends AppCompatActivity {
     private int item_two_purchased = 0;
     private int item_three_purchased = 0;
     private int lastLevelActive, playLevel;
+    private int total_explored;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +48,7 @@ public class StoreActivity extends AppCompatActivity {
         item_three_purchased = sharedPreferences.getInt("item_three_purchased", 0);
         lastLevelActive = sharedPreferences.getInt("lastLevelActive", 1);
         playLevel = sharedPreferences.getInt("playLevel", 1);
+        total_explored = sharedPreferences.getInt("total_explored", 0);
 
         all_coin = sharedPreferences.getInt("coin", 0);
 
@@ -69,7 +72,12 @@ public class StoreActivity extends AppCompatActivity {
     }
 
     private void load_store() {
-        planets_explored.setText(getResources().getString(R.string.planets_explored) + " " + (lastLevelActive - 1));
+        item_one_purchased = sharedPreferences.getInt("item_one_purchased", 0);
+        item_two_purchased = sharedPreferences.getInt("item_two_purchased", 0);
+        item_three_purchased = sharedPreferences.getInt("item_three_purchased", 0);
+        layout_vertical.removeAllViews();
+
+        planets_explored.setText(getResources().getString(R.string.planets_explored) + " " + total_explored);
         coin.setText(getResources().getString(R.string.coins) + " " + all_coin);
 
         String[] o_names = new String[]{"Neuronus", "Neuronus", "Neuronus"};
@@ -77,15 +85,6 @@ public class StoreActivity extends AppCompatActivity {
         int[] images = new int[]{R.drawable.store_0, R.drawable.store_1, R.drawable.store_2};
         int[] r_c = new int[]{200, 200, 200};
         int[] purchased = new int[]{item_one_purchased, item_two_purchased, item_three_purchased};
-
-        boolean[] status = new boolean[]{
-                sharedPreferences.getBoolean("store_0", false),
-                sharedPreferences.getBoolean("store_1", false),
-                sharedPreferences.getBoolean("store_2", false),
-        };
-
-        layout_vertical.removeAllViews();
-
 
         for (int i = 0; i < 3; i++) {
             View one_store = inflate.inflate(R.layout.one_store, null);
@@ -105,7 +104,7 @@ public class StoreActivity extends AppCompatActivity {
 
             if (r_c[i] <= all_coin) {
                 buy.setBackgroundResource(R.drawable.green_rect);
-                buy.setBackgroundColor(getResources().getColor(R.color.white));
+                buy.setTextColor(getResources().getColor(R.color.white));
 
                 int finalI = i;
                 buy.setOnClickListener(View -> {
@@ -115,7 +114,6 @@ public class StoreActivity extends AppCompatActivity {
                     editor.putInt("item_one_purchased", purchased[0]);
                     editor.putInt("item_two_purchased", purchased[1]);
                     editor.putInt("item_three_purchased", purchased[2]);
-                    editor.putBoolean("store_" + finalI, true);
                     editor.putInt("coin", all_coin);
                     editor.apply();
 

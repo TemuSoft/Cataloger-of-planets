@@ -38,6 +38,7 @@ public class GroundActivity extends AppCompatActivity implements View.OnTouchLis
     private GroundView groundView;
     private Handler handler;
     private int lastLevelActive, playLevel, item_index;
+    private int total_explored;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +51,7 @@ public class GroundActivity extends AppCompatActivity implements View.OnTouchLis
         lastLevelActive = sharedPreferences.getInt("lastLevelActive", 1);
         playLevel = sharedPreferences.getInt("playLevel", 1);
         item_index = sharedPreferences.getInt("item_index", 0);
+        total_explored = sharedPreferences.getInt("total_explored", 0);
 
         all_coin = sharedPreferences.getInt("coin", 0);
 
@@ -90,7 +92,7 @@ public class GroundActivity extends AppCompatActivity implements View.OnTouchLis
             reloading_UI();
         });
 
-        planets_explored.setText(getResources().getString(R.string.planets_explored) + " " + (lastLevelActive - 1));
+        planets_explored.setText(getResources().getString(R.string.planets_explored) + " " + total_explored);
         coin.setText(getResources().getString(R.string.coins) + " " + all_coin);
 
 
@@ -305,15 +307,6 @@ public class GroundActivity extends AppCompatActivity implements View.OnTouchLis
 
 
         if (groundView.tap_index != -1) {
-            int xx = groundView.eclipse_data.get(groundView.tap_index).get(5);
-            int yy = groundView.eclipse_data.get(groundView.tap_index).get(6);
-            if (groundView.move_is_internal) {
-                xx = groundView.rect_data.get(groundView.tap_index).get(5);
-                yy = groundView.rect_data.get(groundView.tap_index).get(6);
-            }
-            int m = groundView.s_h / 6;
-            Rect move = new Rect(xx + m, yy + m, xx + groundView.s_w - m, yy + groundView.s_h - m);
-
             for (int i = 0; i < groundView.rect_data.size(); i++) {
                 if (groundView.tap_index == i && groundView.move_is_internal)
                     continue;
@@ -328,19 +321,28 @@ public class GroundActivity extends AppCompatActivity implements View.OnTouchLis
                 int uindex = groundView.rect_data.get(i).get(7);
 
                 if (uindex != -1) continue;
+                Rect soil = new Rect(rx, ry, rx + groundView.gr_w, ry + groundView.gr_h);
 
-                Rect soil = new Rect(x + m, y + m, x + groundView.s_w - m, y + groundView.s_h - m);
-
-                if (Rect.intersects(soil, move)) {
-                    groundView.rect_data.get(i).set(7, groundView.rect_data.get(groundView.tap_index).get(7));
-                    groundView.rect_data.get(groundView.tap_index).set(7, -1);
+                if (Rect.intersects(soil, clicked)) {
+                    if (groundView.move_is_internal) {
+                        groundView.rect_data.get(i).set(7, groundView.rect_data.get(groundView.tap_index).get(7));
+                        groundView.rect_data.get(groundView.tap_index).set(7, -1);
+                    }else {
+                        groundView.rect_data.get(i).set(7, groundView.eclipse_data.get(groundView.tap_index).get(7));
+                        groundView.eclipse_data.get(groundView.tap_index).set(7, -1);
+                    }
                     groundView.check_game_status();
                     break;
                 }
             }
 
-            groundView.rect_data.get(groundView.tap_index).set(5, groundView.rect_data.get(groundView.tap_index).get(2));
-            groundView.rect_data.get(groundView.tap_index).set(6, groundView.rect_data.get(groundView.tap_index).get(3));
+            if (groundView.move_is_internal) {
+                groundView.rect_data.get(groundView.tap_index).set(5, groundView.rect_data.get(groundView.tap_index).get(2));
+                groundView.rect_data.get(groundView.tap_index).set(6, groundView.rect_data.get(groundView.tap_index).get(3));
+            }else {
+                groundView.eclipse_data.get(groundView.tap_index).set(5, groundView.eclipse_data.get(groundView.tap_index).get(2));
+                groundView.eclipse_data.get(groundView.tap_index).set(6, groundView.eclipse_data.get(groundView.tap_index).get(3));
+            }
         }
 
         groundView.move_is_internal = false;

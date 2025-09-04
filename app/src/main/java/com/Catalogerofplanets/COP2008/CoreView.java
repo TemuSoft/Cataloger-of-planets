@@ -156,14 +156,14 @@ public class CoreView extends View {
         paint.setStyle(Paint.Style.FILL);
         canvas.drawRect(line_x, line_y, line_x + pro_s_w, line_y + 3, paint);
 
-        int cx = c_x + c_w_h / 2;
-        int cy = c_y + c_w_h / 2;
-        paint.setStyle(Paint.Style.STROKE);
-        canvas.drawCircle(cx, cy, gap * 2, paint);
-        canvas.drawCircle(cx, cy, gap * 3, paint);
-        canvas.drawCircle(cx, cy, gap * 4, paint);
-        canvas.drawCircle(cx, cy, gap * 5, paint);
-        canvas.drawCircle(cx, cy, gap * 6, paint);
+//        int cx = c_x + c_w_h / 2;
+//        int cy = c_y + c_w_h / 2;
+//        paint.setStyle(Paint.Style.STROKE);
+//        canvas.drawCircle(cx, cy, gap * 2, paint);
+//        canvas.drawCircle(cx, cy, gap * 3, paint);
+//        canvas.drawCircle(cx, cy, gap * 4, paint);
+//        canvas.drawCircle(cx, cy, gap * 5, paint);
+//        canvas.drawCircle(cx, cy, gap * 6, paint);
 
 //        paint.setARGB(80, getResources().getColor(R.color.red), getResources().getColor(R.color.blue), getResources().getColor(R.color.blue));
         paint.setColor(getResources().getColor(R.color.green));
