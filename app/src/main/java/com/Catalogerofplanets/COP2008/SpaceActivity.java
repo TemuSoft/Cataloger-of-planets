@@ -28,7 +28,8 @@ public class SpaceActivity extends AppCompatActivity {
     private String lang;
     private LayoutInflater inflate;
     private Intent intent;
-    private int active_space = 0, all_planets_explored, all_coin;
+    private int lastLevelActive, playLevel;
+    private int all_coin;
     private int[][] images = new int[][]{{R.drawable.cha_0_0, R.drawable.cha_0_1, R.drawable.cha_0_2, R.drawable.cha_0_3}, {R.drawable.cha_1_0, R.drawable.cha_1_1, R.drawable.cha_1_2, R.drawable.cha_1_3}, {R.drawable.cha_2_0, R.drawable.cha_2_1, R.drawable.cha_2_2, R.drawable.cha_2_3}, {R.drawable.cha_3_0, R.drawable.cha_3_1, R.drawable.cha_3_2, R.drawable.cha_3_3},};
 
     @Override
@@ -40,8 +41,9 @@ public class SpaceActivity extends AppCompatActivity {
         isMute = sharedPreferences.getBoolean("isMute", false);
         soundMute = sharedPreferences.getBoolean("soundMute", false);
         lang = sharedPreferences.getString("lang", "");
-        all_planets_explored = sharedPreferences.getInt("item_index", 0);
         all_coin = sharedPreferences.getInt("coin", 0);
+        lastLevelActive = sharedPreferences.getInt("lastLevelActive", 1);
+        playLevel = sharedPreferences.getInt("playLevel", 1);
 
         setContentView(R.layout.activity_space);
 
@@ -60,12 +62,12 @@ public class SpaceActivity extends AppCompatActivity {
         });
 
         backward.setOnClickListener(View -> {
-            active_space--;
+            playLevel--;
             process_UI();
         });
 
         forward.setOnClickListener(View -> {
-            active_space++;
+            playLevel++;
             process_UI();
         });
 
@@ -83,18 +85,18 @@ public class SpaceActivity extends AppCompatActivity {
     private void process_UI() {
         backward.setVisibility(VISIBLE);
         forward.setVisibility(VISIBLE);
-        if (active_space < 0) {
-            active_space = 0;
+        if (playLevel < 1) {
+            playLevel = 1;
             backward.setVisibility(INVISIBLE);
-        } else if (active_space > 3) {
-            active_space = 3;
+        } else if (playLevel > lastLevelActive) {
+            playLevel = lastLevelActive;
             forward.setVisibility(INVISIBLE);
         }
 
-        chapter.setText(getResources().getString(R.string.chapter) + " " + (active_space + 1));
+        chapter.setText(getResources().getString(R.string.chapter) + " " + playLevel);
 
         load_spaces();
-        planets_explored.setText(getResources().getString(R.string.planets_explored) + " " + all_planets_explored);
+        planets_explored.setText(getResources().getString(R.string.planets_explored) + " " + (lastLevelActive - 1));
         coin.setText(getResources().getString(R.string.coins) + " " + all_coin);
     }
 
@@ -104,6 +106,7 @@ public class SpaceActivity extends AppCompatActivity {
         ImageView planet3 = findViewById(R.id.planet3);
         ImageView planet4 = findViewById(R.id.planet4);
 
+        int active_space = (playLevel - 1) % Player.planet_devider;
         planet1.setImageResource(images[active_space][0]);
         planet2.setImageResource(images[active_space][1]);
         planet3.setImageResource(images[active_space][2]);

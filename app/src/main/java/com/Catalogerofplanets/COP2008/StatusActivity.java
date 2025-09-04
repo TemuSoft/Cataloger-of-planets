@@ -11,7 +11,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -34,10 +33,12 @@ public class StatusActivity extends AppCompatActivity {
     private String lang;
     private LayoutInflater inflate;
     private Intent intent;
-    private int all_planets_explored, all_coin;
-    private int group_index, item_index;
+    private int all_coin;
+    private int item_index;
     private int atmosphere_coin, ground_coin, core_coin;
     private String atmosphere_status, ground_status, core_status;
+    private int lastLevelActive, playLevel;
+    private int item_one_purchased, item_two_purchased, item_three_purchased;
 
 
     @Override
@@ -46,13 +47,7 @@ public class StatusActivity extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         sharedPreferences = getSharedPreferences("logerofplanetsCO", MODE_PRIVATE);
         editor = sharedPreferences.edit();
-        isMute = sharedPreferences.getBoolean("isMute", false);
-        soundMute = sharedPreferences.getBoolean("soundMute", false);
-        lang = sharedPreferences.getString("lang", "");
-        all_planets_explored = sharedPreferences.getInt("item_index", 0);
-        all_coin = sharedPreferences.getInt("coin", 0);
-        group_index = sharedPreferences.getInt("group_index", 0);
-        item_index = sharedPreferences.getInt("item_index", 0);
+        get_datas();
 
         setContentView(R.layout.activity_status);
 
@@ -90,13 +85,29 @@ public class StatusActivity extends AppCompatActivity {
             finish();
         });
 
-        planets_explored.setText(getResources().getString(R.string.planets_explored) + " " + all_planets_explored);
+        planets_explored.setText(getResources().getString(R.string.planets_explored) + " " + (lastLevelActive - 1));
         coin.setText(getResources().getString(R.string.coins) + " " + all_coin);
 
+        int group_index = (playLevel - 1) % Player.planet_devider;
         int p = getResources().getIdentifier("cha_" + group_index + "_" + item_index, "drawable", getPackageName());
         planet.setImageResource(p);
 
+        name.setText("Planet " + playLevel + "+" + item_index);
+
         get_value();
+    }
+
+    private void get_datas() {
+        isMute = sharedPreferences.getBoolean("isMute", false);
+        soundMute = sharedPreferences.getBoolean("soundMute", false);
+        lang = sharedPreferences.getString("lang", "");
+        all_coin = sharedPreferences.getInt("coin", 0);
+        item_index = sharedPreferences.getInt("item_index", 0);
+        lastLevelActive = sharedPreferences.getInt("lastLevelActive", 1);
+        playLevel = sharedPreferences.getInt("playLevel", 1);
+        item_one_purchased = sharedPreferences.getInt("item_one_purchased", 0);
+        item_two_purchased = sharedPreferences.getInt("item_two_purchased", 0);
+        item_three_purchased = sharedPreferences.getInt("item_three_purchased", 0);
     }
 
     private void get_value() {
@@ -184,12 +195,26 @@ public class StatusActivity extends AppCompatActivity {
                 finish();
             });
 
+
+            int purchased = item_one_purchased + item_two_purchased + item_three_purchased;
+            if (lastLevelActive < purchased) {
+                next.setEnabled(false);
+                next.setAlpha(0.5F);
+            } else {
+                next.setEnabled(true);
+                next.setAlpha(1F);
+            }
+
             next.setOnClickListener(View -> {
+                playLevel++;
+                if (playLevel > lastLevelActive)
+                    lastLevelActive = playLevel;
+
+                editor.putInt("lastLevelActive", lastLevelActive);
+                editor.putInt("playLevel", playLevel);
                 editor.putInt("coin", all_coin + atmosphere_coin + ground_coin + core_coin);
                 editor.apply();
 
-                // purchaed amount will deccided thi button activation
-                Toast.makeText(this, "Next processing will be added her is it's required!", Toast.LENGTH_SHORT).show();
             });
         }
     }
@@ -205,6 +230,7 @@ public class StatusActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         get_value();
+        get_datas();
 
 //        isMute = sharedPreferences.getBoolean("isMute", false);
 //        if (!isMute)

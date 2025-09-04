@@ -30,7 +30,7 @@ public class GroundView extends View {
     private Context context;
 
 
-    int group_index, item_index;
+    int playLevel, item_index;
     int padding, margin;
     Bitmap ground_rect, ground_eclipse;
     ArrayList<Bitmap> soils = new ArrayList<>();
@@ -58,7 +58,7 @@ public class GroundView extends View {
         margin = padding / 2;
 
         sharedPreferences = context.getSharedPreferences("logerofplanetsCO", context.MODE_PRIVATE);
-        group_index = sharedPreferences.getInt("group_index", 0);
+        playLevel = sharedPreferences.getInt("playLevel", 0);
         item_index = sharedPreferences.getInt("item_index", 0);
 
         ground_rect = BitmapFactory.decodeResource(res, R.drawable.ground_rect);

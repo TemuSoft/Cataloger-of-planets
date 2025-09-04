@@ -15,19 +15,15 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import java.util.Random;
-
-public class AtmosphereActivity extends AppCompatActivity implements View.OnTouchListener {
+public class CoreActivity extends AppCompatActivity implements View.OnTouchListener {
     private ImageView back;
     private TextView planets_explored, coin;
     private LinearLayout layout_canvas, layout_time, layout_progress;
     private LinearLayout layout_complete, layout_lose;
-    private ProgressBar progressBar_red, progressBar_blue, progressBar_green;
     private TextView name, time;
 
     private SharedPreferences sharedPreferences;
@@ -39,10 +35,8 @@ public class AtmosphereActivity extends AppCompatActivity implements View.OnTouc
     private LayoutInflater inflate;
     private Intent intent;
     private int all_coin;
-    private AtmosphereView atmosphereView;
+    private CoreView coreView;
     private Handler handler;
-    private long start_time = System.currentTimeMillis();
-    private long pause_time;
     private int lastLevelActive, playLevel;
 
     @Override
@@ -58,7 +52,7 @@ public class AtmosphereActivity extends AppCompatActivity implements View.OnTouc
 
         all_coin = sharedPreferences.getInt("coin", 0);
 
-        setContentView(R.layout.activity_atmosphere);
+        setContentView(R.layout.activity_core);
         handler = new Handler();
 
         back = findViewById(R.id.back);
@@ -71,10 +65,6 @@ public class AtmosphereActivity extends AppCompatActivity implements View.OnTouc
 
         layout_complete = findViewById(R.id.layout_complete);
         layout_lose = findViewById(R.id.layout_lose);
-
-        progressBar_red = findViewById(R.id.progressBar_red);
-        progressBar_blue = findViewById(R.id.progressBar_blue);
-        progressBar_green = findViewById(R.id.progressBar_green);
 
         name = findViewById(R.id.name);
         time = findViewById(R.id.time);
@@ -89,14 +79,14 @@ public class AtmosphereActivity extends AppCompatActivity implements View.OnTouc
             int w = layout_canvas.getWidth();
             int h = layout_canvas.getHeight();
 
-            atmosphereView = new AtmosphereView(this, w, h, getResources(), 0);
-            atmosphereView.setLayoutParams(new LinearLayout.LayoutParams(w, h));
-            layout_canvas.addView(atmosphereView);
+            coreView = new CoreView(this, w, h, getResources(), 0);
+            coreView.setLayoutParams(new LinearLayout.LayoutParams(w, h));
+            layout_canvas.addView(coreView);
 
             layout_canvas.setOnTouchListener(this);
             reloading_UI();
-        });
 
+        });
 
         planets_explored.setText(getResources().getString(R.string.planets_explored) + " " + (lastLevelActive - 1));
         coin.setText(getResources().getString(R.string.coins) + " " + all_coin);
@@ -105,19 +95,16 @@ public class AtmosphereActivity extends AppCompatActivity implements View.OnTouc
     private void reloading_UI() {
         Runnable r = new Runnable() {
             public void run() {
-                if (atmosphereView.isPlaying) {
-                    if (!atmosphereView.game_won && !atmosphereView.game_over)
-                        atmosphereView.update();
+                if (coreView.isPlaying) {
+                    if (!coreView.game_won && !coreView.game_over) coreView.update();
 
-                    time.setText(Player.convertMillisToTime(System.currentTimeMillis() - start_time));
+                    time.setText(Player.convertMillisToTime(System.currentTimeMillis() - coreView.start_time));
 
-                    if (atmosphereView.game_won && atmosphereView.game_won_time + atmosphereView.duration < System.currentTimeMillis())
+                    if (coreView.game_won && coreView.game_won_time + coreView.duration < System.currentTimeMillis())
                         game_won();
 
-                    if (atmosphereView.game_over && atmosphereView.game_over_time + atmosphereView.duration < System.currentTimeMillis())
+                    if (coreView.game_over && coreView.game_over_time + coreView.duration < System.currentTimeMillis())
                         game_over();
-
-                    update_progress_data();
 
                     reloading_UI();
                 }
@@ -126,23 +113,8 @@ public class AtmosphereActivity extends AppCompatActivity implements View.OnTouc
         handler.postDelayed(r, 20);
     }
 
-    private void update_progress_data() {
-        int progressBar_red_value = atmosphereView.progress_value[0];
-        int progressBar_blue_value = atmosphereView.progress_value[1];
-        int progressBar_green_value = atmosphereView.progress_value[2];
-
-        progressBar_red.setProgress(progressBar_red_value);
-        progressBar_blue.setProgress(progressBar_blue_value);
-        progressBar_green.setProgress(progressBar_green_value);
-
-        if (progressBar_red_value >= 100 && progressBar_blue_value >= 100 && progressBar_green_value >= 100) {
-            atmosphereView.game_won = true;
-            atmosphereView.game_won_time = System.currentTimeMillis();
-        }
-    }
-
     private void game_won() {
-        atmosphereView.isPlaying = false;
+        coreView.isPlaying = false;
         layout_complete.setVisibility(VISIBLE);
         layout_time.setVisibility(INVISIBLE);
         layout_progress.setVisibility(INVISIBLE);
@@ -153,31 +125,31 @@ public class AtmosphereActivity extends AppCompatActivity implements View.OnTouc
         Button menu = findViewById(R.id.menu_won);
 
         int group_index = (playLevel - 1) % Player.planet_devider;
-        int im = getResources().getIdentifier("cha_" + group_index + "_" + atmosphereView.item_index, "drawable", getPackageName());
+        int im = getResources().getIdentifier("cha_" + group_index + "_" + coreView.item_index, "drawable", getPackageName());
         planet.setImageResource(im);
-        coin.setText("+" + atmosphereView.score + " " + getResources().getString(R.string.coins));
+        coin.setText("+" + coreView.score + " " + getResources().getString(R.string.coins));
 
-        editor.putString("atmosphere_status", "completed");
-        editor.putInt("atmosphere_coin", atmosphereView.score);
+        editor.putString("core_status", "completed");
+        editor.putInt("core_coin", coreView.score);
         editor.apply();
 
         go_to_planets.setOnClickListener(View -> {
             Player.button(soundMute);
-            intent = new Intent(AtmosphereActivity.this, SpaceActivity.class);
+            intent = new Intent(CoreActivity.this, SpaceActivity.class);
             startActivity(intent);
             finish();
         });
 
         menu.setOnClickListener(View -> {
             Player.button(soundMute);
-            intent = new Intent(AtmosphereActivity.this, MainActivity.class);
+            intent = new Intent(CoreActivity.this, MainActivity.class);
             startActivity(intent);
             finish();
         });
     }
 
     private void game_over() {
-        atmosphereView.isPlaying = false;
+        coreView.isPlaying = false;
         layout_lose.setVisibility(VISIBLE);
         layout_time.setVisibility(INVISIBLE);
         layout_progress.setVisibility(INVISIBLE);
@@ -187,24 +159,24 @@ public class AtmosphereActivity extends AppCompatActivity implements View.OnTouc
         Button go_to_planets = findViewById(R.id.go_to_planets_lose);
         Button menu = findViewById(R.id.menu_lose);
 
-        int group_index = (playLevel - 1) % Player.planet_devider;;
-        int im = getResources().getIdentifier("cha_" + group_index + "_" + atmosphereView.item_index, "drawable", getPackageName());
+        int group_index = (playLevel - 1) % Player.planet_devider;
+        int im = getResources().getIdentifier("cha_" + group_index + "_" + coreView.item_index, "drawable", getPackageName());
         planet.setImageResource(im);
         coin.setText("0 " + getResources().getString(R.string.coins));
 
-        editor.putString("atmosphere_status", "closed");
+        editor.putString("core_status", "closed");
         editor.apply();
 
         go_to_planets.setOnClickListener(View -> {
             Player.button(soundMute);
-            intent = new Intent(AtmosphereActivity.this, SpaceActivity.class);
+            intent = new Intent(CoreActivity.this, SpaceActivity.class);
             startActivity(intent);
             finish();
         });
 
         menu.setOnClickListener(View -> {
             Player.button(soundMute);
-            intent = new Intent(AtmosphereActivity.this, MainActivity.class);
+            intent = new Intent(CoreActivity.this, MainActivity.class);
             startActivity(intent);
             finish();
         });
@@ -218,7 +190,11 @@ public class AtmosphereActivity extends AppCompatActivity implements View.OnTouc
 //        if (!isMute)
 //            Player.all_screens.pause();
 
-        pause_time = System.currentTimeMillis();
+        try {
+            coreView.pause_time = System.currentTimeMillis();
+        } catch (Exception e) {
+
+        }
     }
 
     @Override
@@ -229,10 +205,13 @@ public class AtmosphereActivity extends AppCompatActivity implements View.OnTouc
 //        if (!isMute)
 //            Player.all_screens.start();
 
-        if (pause_time != 0) {
-            long gap = System.currentTimeMillis() - pause_time;
-            start_time += gap;
-            pause_time = 0;
+        try {
+            if (coreView.pause_time != 0) {
+                long gap = System.currentTimeMillis() - coreView.pause_time;
+                coreView.start_time += gap;
+                coreView.pause_time = 0;
+            }
+        } catch (Exception e) {
         }
     }
 
@@ -254,62 +233,24 @@ public class AtmosphereActivity extends AppCompatActivity implements View.OnTouc
                 processActionMove(x, y);
                 break;
             case MotionEvent.ACTION_UP:
-                if (!atmosphereView.game_won && !atmosphereView.game_over)
-                    processActionUp(x, y);
+                if (!coreView.game_won && !coreView.game_over) processActionUp(x, y);
                 break;
         }
         return true;
     }
 
-    private void processActionDown(int x, int y) {
+    private void processActionDown(int xp, int yp) {
+        Rect clicked = new Rect(xp, yp, xp, yp);
 
     }
 
     private void processActionUp(int xp, int yp) {
         Rect clicked = new Rect(xp, yp, xp, yp);
 
-        for (int i = 0; i < atmosphereView.atoms_data.size(); i++) {
-            int x = atmosphereView.atoms_data.get(i).get(0);
-            int y = atmosphereView.atoms_data.get(i).get(1);
-            int index = atmosphereView.atoms_data.get(i).get(2);
-
-            Rect at = new Rect(x, y, x + atmosphereView.at_wh, y + atmosphereView.at_wh);
-            if (Rect.intersects(at, clicked)) {
-                if (index > 2) {
-                    atmosphereView.game_over = true;
-                    atmosphereView.game_over_time = System.currentTimeMillis();
-                    atmosphereView.failure_index = i;
-                    atmosphereView.invalidate();
-                } else {
-                    int value = atmosphereView.progress_value[index];
-                    if (value == 100) {
-                        atmosphereView.miss_counter++;
-                        atmosphereView.failure_index = i;
-                        atmosphereView.last_miss_time = System.currentTimeMillis();
-
-                        if (atmosphereView.miss_counter < 3) {
-                            atmosphereView.score -= 10 + new Random().nextInt(10);
-                        } else {
-                            atmosphereView.game_over = true;
-                            atmosphereView.game_over_time = System.currentTimeMillis();
-                            atmosphereView.invalidate();
-                        }
-                    } else {
-                        atmosphereView.score += 10 + new Random().nextInt(10);
-                        atmosphereView.progress_value[index] += 10;
-                        atmosphereView.atoms_data.get(i).set(2, -1);
-                        atmosphereView.success_index = i;
-                        atmosphereView.check_game_status();
-                        atmosphereView.last_success_time = System.currentTimeMillis();
-                    }
-                }
-                break;
-            }
-        }
-
+        coreView.add_click(xp, yp);
     }
 
-    private void processActionMove(int x, int y) {
+    private void processActionMove(int xp, int yp) {
 
     }
 }

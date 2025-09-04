@@ -28,7 +28,7 @@ public class AtmosphereView extends View{
     private Context context;
 
 
-    int group_index, item_index;
+    int playLevel, item_index;
     Bitmap planet;
     ArrayList<Bitmap> atoms = new ArrayList<>();
     int p_x, p_y, p_wh;
@@ -51,14 +51,16 @@ public class AtmosphereView extends View{
         padding = screenX / 10;
 
         sharedPreferences = context.getSharedPreferences("logerofplanetsCO", context.MODE_PRIVATE);
-        group_index = sharedPreferences.getInt("group_index", 0);
+        playLevel = sharedPreferences.getInt("playLevel", 0);
         item_index = sharedPreferences.getInt("item_index", 0);
+        playLevel = sharedPreferences.getInt("playLevel", 1);
 
         int index = random.nextInt(3);
         int value = random.nextInt(5) + 1;
         progress_value[index] = value * 10;
 
 
+        int group_index = (playLevel - 1) % Player.planet_devider;
         int p = context.getResources().getIdentifier("cha_" + group_index + "_" + item_index, "drawable", context.getPackageName());
         planet = BitmapFactory.decodeResource(res, p);
         p_wh = planet.getWidth();

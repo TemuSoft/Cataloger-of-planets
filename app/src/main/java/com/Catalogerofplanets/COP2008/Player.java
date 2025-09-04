@@ -27,6 +27,7 @@ import java.util.Locale;
 
 public class Player {
 
+    public static int planet_devider  = 4;
     private static SharedPreferences sharedPreferences;
 	private static boolean onVibrating;
     private static Vibrator v;

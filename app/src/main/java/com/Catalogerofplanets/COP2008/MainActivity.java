@@ -25,7 +25,8 @@ public class MainActivity extends AppCompatActivity {
     private String lang;
     private LayoutInflater inflate;
     private Intent intent;
-    private int all_planets_explored, all_coin;
+    private int all_coin;
+    private int lastLevelActive, playLevel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,8 +36,9 @@ public class MainActivity extends AppCompatActivity {
         editor = sharedPreferences.edit();
         isMute = sharedPreferences.getBoolean("isMute", false);
         soundMute = sharedPreferences.getBoolean("soundMute", false);
+        lastLevelActive = sharedPreferences.getInt("lastLevelActive", 1);
+        playLevel = sharedPreferences.getInt("playLevel", 1);
 
-        all_planets_explored = sharedPreferences.getInt("item_index", 0);
         all_coin = sharedPreferences.getInt("coin", 0);
 
         setContentView(R.layout.activity_main);
@@ -52,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
             finish();
         });
 
-        planets_explored.setText(getResources().getString(R.string.planets_explored) + " " + all_planets_explored);
+        planets_explored.setText(getResources().getString(R.string.planets_explored) + " " + (lastLevelActive - 1));
         coin.setText(getResources().getString(R.string.coins) + " " + all_coin);
     }
 

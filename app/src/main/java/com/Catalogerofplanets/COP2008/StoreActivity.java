@@ -15,8 +15,6 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import org.w3c.dom.Text;
-
 public class StoreActivity extends AppCompatActivity {
     private ImageView back;
     private TextView planets_explored, coin;
@@ -29,7 +27,11 @@ public class StoreActivity extends AppCompatActivity {
     private String lang;
     private LayoutInflater inflate;
     private Intent intent;
-    private int all_planets_explored, all_coin;
+    private int all_coin;
+    private int item_one_purchased = 0;
+    private int item_two_purchased = 0;
+    private int item_three_purchased = 0;
+    private int lastLevelActive, playLevel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,8 +41,12 @@ public class StoreActivity extends AppCompatActivity {
         editor = sharedPreferences.edit();
         isMute = sharedPreferences.getBoolean("isMute", false);
         soundMute = sharedPreferences.getBoolean("soundMute", false);
+        item_one_purchased = sharedPreferences.getInt("item_one_purchased", 0);
+        item_two_purchased = sharedPreferences.getInt("item_two_purchased", 0);
+        item_three_purchased = sharedPreferences.getInt("item_three_purchased", 0);
+        lastLevelActive = sharedPreferences.getInt("lastLevelActive", 1);
+        playLevel = sharedPreferences.getInt("playLevel", 1);
 
-        all_planets_explored = sharedPreferences.getInt("planets_explored", 0);
         all_coin = sharedPreferences.getInt("coin", 0);
 
         setContentView(R.layout.activity_store);
@@ -63,13 +69,14 @@ public class StoreActivity extends AppCompatActivity {
     }
 
     private void load_store() {
-        planets_explored.setText(getResources().getString(R.string.planets_explored) + " " + all_planets_explored);
+        planets_explored.setText(getResources().getString(R.string.planets_explored) + " " + (lastLevelActive - 1));
         coin.setText(getResources().getString(R.string.coins) + " " + all_coin);
 
         String[] o_names = new String[]{"Neuronus", "Neuronus", "Neuronus"};
         String[] names = new String[]{"Enviro-suit", "Driller", "Thermoshield"};
         int[] images = new int[]{R.drawable.store_0, R.drawable.store_1, R.drawable.store_2};
-        int[] r_c = new int[]{200, 300, 400};
+        int[] r_c = new int[]{200, 200, 200};
+        int[] purchased = new int[]{item_one_purchased, item_two_purchased, item_three_purchased};
 
         boolean[] status = new boolean[]{
                 sharedPreferences.getBoolean("store_0", false),
@@ -80,7 +87,7 @@ public class StoreActivity extends AppCompatActivity {
         layout_vertical.removeAllViews();
 
 
-        for (int i = 0; i < 2; i++) {
+        for (int i = 0; i < 3; i++) {
             View one_store = inflate.inflate(R.layout.one_store, null);
 
             TextView name = one_store.findViewById(R.id.name);
@@ -94,7 +101,7 @@ public class StoreActivity extends AppCompatActivity {
             name.setText(names[i]);
             store.setImageResource(images[i]);
             coin.setText(getResources().getString(R.string.cost_coins) + " " + r_c[i]);
-            p_name.setText(o_names[i]);
+            p_name.setText(o_names[i] + "(" + purchased[i] + ")");
 
             if (status[i]) {
                 buy.setVisibility(GONE);
@@ -105,7 +112,11 @@ public class StoreActivity extends AppCompatActivity {
                 int finalI = i;
                 buy.setOnClickListener(View -> {
                     all_coin -= r_c[finalI];
+                    purchased[finalI] += 1;
 
+                    editor.putInt("item_one_purchased", purchased[0]);
+                    editor.putInt("item_two_purchased", purchased[1]);
+                    editor.putInt("item_three_purchased", purchased[2]);
                     editor.putBoolean("store_" + finalI, true);
                     editor.putInt("coin", all_coin);
                     editor.apply();
