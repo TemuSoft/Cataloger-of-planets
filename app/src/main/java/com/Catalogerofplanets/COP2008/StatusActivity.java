@@ -93,7 +93,6 @@ public class StatusActivity extends AppCompatActivity {
 
         name.setText("Planet " + playLevel + "" + item_index);
 
-        set_UI();
     }
 
     private void get_datas() {
@@ -150,7 +149,6 @@ public class StatusActivity extends AppCompatActivity {
 
             intent = new Intent(StatusActivity.this, AtmosphereActivity.class);
             startActivity(intent);
-            finish();
         });
 
         if (ground_status.equals("completed")) {
@@ -181,7 +179,6 @@ public class StatusActivity extends AppCompatActivity {
 
             intent = new Intent(StatusActivity.this, GroundActivity.class);
             startActivity(intent);
-            finish();
         });
 
         if (core_status.equals("completed")) {
@@ -212,7 +209,6 @@ public class StatusActivity extends AppCompatActivity {
 
             intent = new Intent(StatusActivity.this, CoreActivity.class);
             startActivity(intent);
-            finish();
         });
 
         if (atmosphere_status.equals("completed") && ground_status.equals("completed") && core_status.equals("completed")) {
@@ -240,6 +236,7 @@ public class StatusActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        set_UI();
 
 //        isMute = sharedPreferences.getBoolean("isMute", false);
 //        if (!isMute)

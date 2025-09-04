@@ -10,6 +10,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.view.View;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -43,7 +44,7 @@ public class CoreView extends View {
     int init_x, init_y;
     ArrayList<ArrayList<Integer>> click_data = new ArrayList<>();
     int expected_value = 0, actual_value = 0;
-    int[] values = new int[]{10, 15, 20, 25, 30};
+    int[] values = new int[]{30, 25, 20, 15, 10};
 
 
     public CoreView(Context mContext, int scX, int scY, Resources res, int level_amount) {
@@ -76,7 +77,7 @@ public class CoreView extends View {
         progress_outer = BitmapFactory.decodeResource(res, R.drawable.progress_vertical);
         progress_inner = BitmapFactory.decodeResource(res, R.drawable.progress_inner);
 
-        c_w_h = screenX * 2 / 3;
+        c_w_h = screenX * 3 / 5;
         gap = c_w_h / 12;
         cl_w_h = gap * 3 / 2;
 
@@ -85,12 +86,12 @@ public class CoreView extends View {
 
         pro_l_w = cl_w_h * 4 / 5;
         pro_l_h = c_w_h;
-        pro_l_x = padding;
-        pro_l_y = c_x;
+        pro_l_x = padding / 2;
+        pro_l_y = 0;
 
         int gp = pro_l_w / 5;
         pro_s_w = pro_l_w - gp * 2;
-        pro_s_h = pro_s_h - gp * 2;
+        pro_s_h = pro_l_h - gp * 2;
         pro_s_x = pro_l_x + gp;
         pro_s_y = pro_l_y + gp;
 
@@ -109,7 +110,7 @@ public class CoreView extends View {
     }
 
     public void add_click(int x, int y) {
-        int[] radios = new int[]{gap * 6, gap * 5, gap * 4, gap * 3, gap * 2};
+        int[] radios = new int[]{gap * 2, gap * 3, gap * 4, gap * 5, gap * 6};
         int dx = x - (c_x + c_w_h / 2);
         int dy = y - (c_y + c_w_h / 2);
         int value = 0;
@@ -155,16 +156,21 @@ public class CoreView extends View {
         paint.setStyle(Paint.Style.FILL);
         canvas.drawRect(line_x, line_y, line_x + pro_s_w, line_y + 3, paint);
 
-        canvas.drawCircle(c_x, c_y, gap * 2, paint);
-        canvas.drawCircle(c_x, c_y, gap * 3, paint);
-        canvas.drawCircle(c_x, c_y, gap * 4, paint);
-        canvas.drawCircle(c_x, c_y, gap * 5, paint);
-        canvas.drawCircle(c_x, c_y, gap * 6, paint);
+        int cx = c_x + c_w_h / 2;
+        int cy = c_y + c_w_h / 2;
+        paint.setStyle(Paint.Style.STROKE);
+        canvas.drawCircle(cx, cy, gap * 2, paint);
+        canvas.drawCircle(cx, cy, gap * 3, paint);
+        canvas.drawCircle(cx, cy, gap * 4, paint);
+        canvas.drawCircle(cx, cy, gap * 5, paint);
+        canvas.drawCircle(cx, cy, gap * 6, paint);
 
+//        paint.setARGB(80, getResources().getColor(R.color.red), getResources().getColor(R.color.blue), getResources().getColor(R.color.blue));
         paint.setColor(getResources().getColor(R.color.green));
         paint.setStyle(Paint.Style.FILL);
-        int h = actual_value * pro_s_h / expected_value;
+        int h = actual_value * pro_s_h / 100;
         Path path = getEllipseBar(pro_s_w, h, init_x, init_y);
+        paint.setAlpha(125);
         canvas.drawPath(path, paint);
     }
 
@@ -182,22 +188,26 @@ public class CoreView extends View {
         Path path = new Path();
         path.moveTo(initX, initY);
 
-        initY += height;
-        path.lineTo(initX, initY);
-
-        for (int i = 0; i < 180; i += 10) {
-            int xy[] = xyPrimePoint(initX, initY, i, initX, initY + height / 2);
-            path.lineTo(xy[0], xy[1]);
-        }
-        initX += width;
         initY -= height;
         path.lineTo(initX, initY);
 
+//        for (int i = 0; i < 180; i += 10) {
+//            int xy[] = xyPrimePoint(initX, initY, i, initX + width / 2, initY);
+//            path.lineTo(xy[0], xy[1]);
+//        }
 
-        for (int i = 0; i < 180; i += 10) {
-            int xy[] = xyPrimePoint(initX, initY, i, initX, initY - height / 2);
-            path.lineTo(xy[0], xy[1]);
-        }
+        initX += width;
+        path.lineTo(initX, initY);
+
+        initY += height;
+        path.lineTo(initX, initY);
+
+
+//        for (int i = 0; i < 180; i += 10) {
+//            int xy[] = xyPrimePoint(initX, initY, i, initX - width / 2, initY);
+//            path.lineTo(xy[0], xy[1]);
+//        }
+        initX -= width;
         path.lineTo(initX, initY);
 
         return path;

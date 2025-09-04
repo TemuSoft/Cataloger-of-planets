@@ -22,7 +22,7 @@ import androidx.appcompat.app.AppCompatActivity;
 public class CoreActivity extends AppCompatActivity implements View.OnTouchListener {
     private ImageView back;
     private TextView planets_explored, coin;
-    private LinearLayout layout_canvas, layout_time, layout_progress;
+    private LinearLayout layout_canvas, layout_time, layout_disc;
     private LinearLayout layout_complete, layout_lose;
     private TextView name, time;
 
@@ -61,7 +61,7 @@ public class CoreActivity extends AppCompatActivity implements View.OnTouchListe
 
         layout_canvas = findViewById(R.id.layout_canvas);
         layout_time = findViewById(R.id.layout_time);
-        layout_progress = findViewById(R.id.layout_progress);
+        layout_disc = findViewById(R.id.layout_disc);
 
         layout_complete = findViewById(R.id.layout_complete);
         layout_lose = findViewById(R.id.layout_lose);
@@ -117,7 +117,7 @@ public class CoreActivity extends AppCompatActivity implements View.OnTouchListe
         coreView.isPlaying = false;
         layout_complete.setVisibility(VISIBLE);
         layout_time.setVisibility(INVISIBLE);
-        layout_progress.setVisibility(INVISIBLE);
+        layout_disc.setVisibility(INVISIBLE);
         layout_canvas.setVisibility(INVISIBLE);
 
         ImageView planet = findViewById(R.id.planet_won);
@@ -154,7 +154,7 @@ public class CoreActivity extends AppCompatActivity implements View.OnTouchListe
         coreView.isPlaying = false;
         layout_lose.setVisibility(VISIBLE);
         layout_time.setVisibility(INVISIBLE);
-        layout_progress.setVisibility(INVISIBLE);
+        layout_disc.setVisibility(INVISIBLE);
         layout_canvas.setVisibility(INVISIBLE);
 
         ImageView planet = findViewById(R.id.planet_lose);

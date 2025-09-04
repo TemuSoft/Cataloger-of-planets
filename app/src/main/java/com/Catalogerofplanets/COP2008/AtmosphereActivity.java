@@ -111,8 +111,6 @@ public class AtmosphereActivity extends AppCompatActivity implements View.OnTouc
 
                     time.setText(Player.convertMillisToTime(System.currentTimeMillis() - start_time));
 
-                    game_won();
-
                     if (atmosphereView.game_won && atmosphereView.game_won_time + atmosphereView.duration < System.currentTimeMillis())
                         game_won();
 

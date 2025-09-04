@@ -20,7 +20,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class GroundActivity extends AppCompatActivity implements View.OnTouchListener {
-    private ImageView back;
+    private ImageView back, planet;
     private TextView planets_explored, coin;
     private LinearLayout layout_canvas, layout_time, layout_progress;
     private LinearLayout layout_complete, layout_lose;
@@ -37,7 +37,7 @@ public class GroundActivity extends AppCompatActivity implements View.OnTouchLis
     private int all_coin;
     private GroundView groundView;
     private Handler handler;
-    private int lastLevelActive, playLevel;
+    private int lastLevelActive, playLevel, item_index;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,11 +49,14 @@ public class GroundActivity extends AppCompatActivity implements View.OnTouchLis
         soundMute = sharedPreferences.getBoolean("soundMute", false);
         lastLevelActive = sharedPreferences.getInt("lastLevelActive", 1);
         playLevel = sharedPreferences.getInt("playLevel", 1);
+        item_index = sharedPreferences.getInt("item_index", 0);
 
         all_coin = sharedPreferences.getInt("coin", 0);
 
         setContentView(R.layout.activity_ground);
         handler = new Handler();
+
+        planet = findViewById(R.id.planet);
 
         back = findViewById(R.id.back);
         planets_explored = findViewById(R.id.planets_explored);
@@ -89,6 +92,11 @@ public class GroundActivity extends AppCompatActivity implements View.OnTouchLis
 
         planets_explored.setText(getResources().getString(R.string.planets_explored) + " " + (lastLevelActive - 1));
         coin.setText(getResources().getString(R.string.coins) + " " + all_coin);
+
+
+        int group_index = (playLevel - 1) % Player.planet_devider;
+        int p = getResources().getIdentifier("cha_" + group_index + "_" + item_index, "drawable", getPackageName());
+        planet.setImageResource(p);
     }
 
     private void reloading_UI() {
@@ -230,7 +238,7 @@ public class GroundActivity extends AppCompatActivity implements View.OnTouchLis
 
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                if (!groundView.game_won && !groundView.game_over && !groundView.show_time_over) processActionDown(x, y);
+                if (!groundView.game_won && !groundView.game_over && groundView.show_time_over) processActionDown(x, y);
                 break;
             case MotionEvent.ACTION_MOVE:
                 if (!groundView.game_won && !groundView.game_over && groundView.tap_index != -1)
@@ -358,5 +366,8 @@ public class GroundActivity extends AppCompatActivity implements View.OnTouchLis
             groundView.eclipse_data.get(groundView.tap_index).set(5, x + x_dif);
             groundView.eclipse_data.get(groundView.tap_index).set(6, y + y_dif);
         }
+
+        groundView.tap_x = xp;
+        groundView.tap_y = yp;
     }
 }

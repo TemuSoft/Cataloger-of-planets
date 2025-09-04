@@ -9,6 +9,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.view.View;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -69,10 +70,20 @@ public class GroundView extends View {
         ge_w = (screenX - padding * 2 - margin * 3) / 4;
         ge_h = ge_w * h / w;
 
+        if (ge_h > ground_eclipse.getHeight()){
+            ge_w = ground_eclipse.getWidth();
+            ge_h = ground_eclipse.getHeight();
+        }
+
         w = ground_rect.getWidth();
         h = ground_rect.getHeight();
         gr_h = (screenY - padding * 2 - margin * 4 - ge_h) / 4;
         gr_w = gr_h * w / h;
+
+        if (gr_h > ground_rect.getHeight()){
+            gr_w = ground_rect.getWidth();
+            gr_h = ground_rect.getHeight();
+        }
 
         init_x_gr = screenX / 2 - gr_w / 2;
         init_y_gr = padding;
@@ -83,17 +94,16 @@ public class GroundView extends View {
         ground_rect = Bitmap.createScaledBitmap(ground_rect, gr_w, gr_h, false);
         ground_eclipse = Bitmap.createScaledBitmap(ground_eclipse, ge_w, ge_h, false);
 
-        w = BitmapFactory.decodeResource(res, R.drawable.soil_0).getWidth();
-        h = BitmapFactory.decodeResource(res, R.drawable.soil_0).getHeight();
+        int max_h = gr_h / 3;
+        int max_w = gr_w / 3;
+        if (s_h > max_h) s_w = max_w * s_h / max_h;
 
-        if (s_h > h) s_w = w * s_h / h;
-
-        if (s_w > w) {
-            s_h = h * s_w / w;
-            s_w = w;
+        if (s_w > max_w) {
+            s_h = max_h * s_w / max_w;
+            s_w = max_w;
         } else {
-            s_w = w;
-            s_h = h;
+            s_w = max_w;
+            s_h = max_h;
         }
 
         for (int i = 0; i < 4; i++) {
@@ -117,7 +127,7 @@ public class GroundView extends View {
     private void initialize_data(Integer index) {
         int s = rect_data.size();
         int rx = init_x_gr;
-        int ry = init_y_gr + (margin + gr_h) * (s - 1);
+        int ry = init_y_gr + (margin + gr_h) * s;
 
         int x = rx + gr_w / 2 - s_w / 2;
         int y = ry + gr_h / 2 - s_h / 2;
@@ -138,7 +148,7 @@ public class GroundView extends View {
         rect_data.add(data);
 
 
-        int ex = init_x_ge + (margin + ge_w) * (s - 1);
+        int ex = init_x_ge + (margin + ge_w) * s;
         int ey = init_y_ge;
 
         x = ex + ge_w / 2 - s_w / 2;
@@ -196,7 +206,7 @@ public class GroundView extends View {
                 int uy = eclipse_data.get(i).get(6);
                 int uindex = eclipse_data.get(i).get(7);
 
-                canvas.drawBitmap(ground_rect, ex, ey, paint);
+                canvas.drawBitmap(ground_eclipse, ex, ey, paint);
 
                 if (uindex == -1) continue;
 
