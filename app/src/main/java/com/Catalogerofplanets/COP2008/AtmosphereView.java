@@ -48,7 +48,7 @@ public class AtmosphereView extends View{
         context = mContext;
         random = new Random();
 
-        padding = screenX / 10;
+        padding = screenX / 16;
 
         sharedPreferences = context.getSharedPreferences("logerofplanetsCO", context.MODE_PRIVATE);
         playLevel = sharedPreferences.getInt("playLevel", 0);
@@ -66,12 +66,11 @@ public class AtmosphereView extends View{
         p_wh = planet.getWidth();
 
         at_wh = BitmapFactory.decodeResource(res, R.drawable.img_atm_0).getWidth();
+        at_wh = p_wh / 5;
         for (int i = 0; i < 4; i++) {
             int a = context.getResources().getIdentifier("img_atm_" + i, "drawable", context.getPackageName());
             Bitmap bitmap = BitmapFactory.decodeResource(res, a);
             atoms.add(Bitmap.createScaledBitmap(bitmap, at_wh, at_wh, false));
-
-            add_atoms();
         }
 
         p_x = screenX / 2 - p_wh / 2;
@@ -87,18 +86,37 @@ public class AtmosphereView extends View{
 
     private void add_atoms() {
         int index = random.nextInt(atoms.size());
-        int x = random.nextInt(screenX - padding * 2 - at_wh) + padding;
-        int y = random.nextInt(screenY - padding * 2 - at_wh) + padding;
+        int x = random.nextInt(screenX - padding / 2 - at_wh) + padding / 2;
+        int y = random.nextInt(p_wh * 3 / 2 - padding / 2) + padding / 2;
 
         Rect at = new Rect(x, y, x + at_wh, y + at_wh);
+
+
         if (Rect.intersects(at, getPlanetCollision()))
             add_atoms();
         else {
-            ArrayList<Integer> data = new ArrayList<>();
-            data.add(x);
-            data.add(y);
-            data.add(index);
-            atoms_data.add(data);
+            boolean has_collision = false;
+            for (int i = 0; i < atoms_data.size(); i++) {
+                int xx = atoms_data.get(i).get(0);
+                int yy = atoms_data.get(i).get(1);
+
+                Rect rect = new Rect(xx, yy, xx + at_wh, yy + at_wh);
+
+                if (Rect.intersects(rect, at)) {
+                    has_collision = true;
+                    break;
+                }
+            }
+
+            if (has_collision) {
+                add_atoms();
+            } else {
+                ArrayList<Integer> data = new ArrayList<>();
+                data.add(x);
+                data.add(y);
+                data.add(index);
+                atoms_data.add(data);
+            }
         }
     }
 
@@ -108,6 +126,7 @@ public class AtmosphereView extends View{
         canvas.drawColor(Color.TRANSPARENT);
 
         canvas.drawBitmap(planet, p_x, p_y, paint);
+
         for (int i = 0; i < atoms_data.size(); i++) {
             int x = atoms_data.get(i).get(0);
             int y = atoms_data.get(i).get(1);

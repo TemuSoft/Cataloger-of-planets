@@ -117,6 +117,7 @@ public class GroundActivity extends AppCompatActivity implements View.OnTouchLis
         layout_complete.setVisibility(VISIBLE);
         layout_time.setVisibility(INVISIBLE);
         layout_progress.setVisibility(INVISIBLE);
+        layout_canvas.setVisibility(INVISIBLE);
 
         ImageView planet = findViewById(R.id.planet_won);
         TextView coin = findViewById(R.id.coin_won);
@@ -126,16 +127,16 @@ public class GroundActivity extends AppCompatActivity implements View.OnTouchLis
         int group_index = (playLevel - 1) % Player.planet_devider;
         int im = getResources().getIdentifier("cha_" + group_index + "_" + groundView.item_index, "drawable", getPackageName());
         planet.setImageResource(im);
+        groundView.score = playLevel * 10 + 100;
         coin.setText("+" + groundView.score + " " + getResources().getString(R.string.coins));
 
         editor.putString("ground_status", "completed");
-        groundView.score = playLevel * 10 + 100;
         editor.putInt("ground_coin", groundView.score);
         editor.apply();
 
         go_to_planets.setOnClickListener(View -> {
             Player.button(soundMute);
-            intent = new Intent(GroundActivity.this, SpaceActivity.class);
+            intent = new Intent(GroundActivity.this, StatusActivity.class);
             startActivity(intent);
             finish();
         });
@@ -153,10 +154,11 @@ public class GroundActivity extends AppCompatActivity implements View.OnTouchLis
         layout_lose.setVisibility(VISIBLE);
         layout_time.setVisibility(INVISIBLE);
         layout_progress.setVisibility(INVISIBLE);
+        layout_canvas.setVisibility(INVISIBLE);
 
         ImageView planet = findViewById(R.id.planet_lose);
         TextView coin = findViewById(R.id.coin_lose);
-        Button go_to_planets = findViewById(R.id.go_to_planets_lose);
+        Button go_to_planets_lose = findViewById(R.id.go_to_planets_lose);
         Button menu = findViewById(R.id.menu_lose);
 
         int group_index = (playLevel - 1) % Player.planet_devider;
@@ -164,19 +166,20 @@ public class GroundActivity extends AppCompatActivity implements View.OnTouchLis
         planet.setImageResource(im);
         coin.setText("0 " + getResources().getString(R.string.coins));
 
+        editor.putInt("ground_coin", 0);
         editor.putString("ground_status", "closed");
         editor.apply();
 
-        go_to_planets.setOnClickListener(View -> {
+        go_to_planets_lose.setOnClickListener(View -> {
             Player.button(soundMute);
-            intent = new Intent(GroundActivity.this, SpaceActivity.class);
+            intent = new Intent(GroundActivity.this, GroundActivity.class);
             startActivity(intent);
             finish();
         });
 
         menu.setOnClickListener(View -> {
             Player.button(soundMute);
-            intent = new Intent(GroundActivity.this, MainActivity.class);
+            intent = new Intent(GroundActivity.this, SpaceActivity.class);
             startActivity(intent);
             finish();
         });

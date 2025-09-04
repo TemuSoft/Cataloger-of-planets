@@ -111,6 +111,8 @@ public class AtmosphereActivity extends AppCompatActivity implements View.OnTouc
 
                     time.setText(Player.convertMillisToTime(System.currentTimeMillis() - start_time));
 
+                    game_won();
+
                     if (atmosphereView.game_won && atmosphereView.game_won_time + atmosphereView.duration < System.currentTimeMillis())
                         game_won();
 
@@ -146,6 +148,7 @@ public class AtmosphereActivity extends AppCompatActivity implements View.OnTouc
         layout_complete.setVisibility(VISIBLE);
         layout_time.setVisibility(INVISIBLE);
         layout_progress.setVisibility(INVISIBLE);
+        layout_canvas.setVisibility(INVISIBLE);
 
         ImageView planet = findViewById(R.id.planet_won);
         TextView coin = findViewById(R.id.coin_won);
@@ -155,23 +158,23 @@ public class AtmosphereActivity extends AppCompatActivity implements View.OnTouc
         int group_index = (playLevel - 1) % Player.planet_devider;
         int im = getResources().getIdentifier("cha_" + group_index + "_" + atmosphereView.item_index, "drawable", getPackageName());
         planet.setImageResource(im);
+        atmosphereView.score = playLevel * 10 + 100;
         coin.setText("+" + atmosphereView.score + " " + getResources().getString(R.string.coins));
 
         editor.putString("atmosphere_status", "completed");
-        atmosphereView.score = playLevel * 10 + 100;
         editor.putInt("atmosphere_coin", atmosphereView.score);
         editor.apply();
 
         go_to_planets.setOnClickListener(View -> {
             Player.button(soundMute);
-            intent = new Intent(AtmosphereActivity.this, SpaceActivity.class);
+            intent = new Intent(AtmosphereActivity.this, StatusActivity.class);
             startActivity(intent);
             finish();
         });
 
         menu.setOnClickListener(View -> {
             Player.button(soundMute);
-            intent = new Intent(AtmosphereActivity.this, MainActivity.class);
+            intent = new Intent(AtmosphereActivity.this, SpaceActivity.class);
             startActivity(intent);
             finish();
         });
@@ -182,10 +185,11 @@ public class AtmosphereActivity extends AppCompatActivity implements View.OnTouc
         layout_lose.setVisibility(VISIBLE);
         layout_time.setVisibility(INVISIBLE);
         layout_progress.setVisibility(INVISIBLE);
+        layout_canvas.setVisibility(INVISIBLE);
 
         ImageView planet = findViewById(R.id.planet_lose);
         TextView coin = findViewById(R.id.coin_lose);
-        Button go_to_planets = findViewById(R.id.go_to_planets_lose);
+        Button go_to_planets_lose = findViewById(R.id.go_to_planets_lose);
         Button menu = findViewById(R.id.menu_lose);
 
         int group_index = (playLevel - 1) % Player.planet_devider;;
@@ -193,19 +197,20 @@ public class AtmosphereActivity extends AppCompatActivity implements View.OnTouc
         planet.setImageResource(im);
         coin.setText("0 " + getResources().getString(R.string.coins));
 
+        editor.putInt("atmosphere_coin", 0);
         editor.putString("atmosphere_status", "closed");
         editor.apply();
 
-        go_to_planets.setOnClickListener(View -> {
+        go_to_planets_lose.setOnClickListener(View -> {
             Player.button(soundMute);
-            intent = new Intent(AtmosphereActivity.this, SpaceActivity.class);
+            intent = new Intent(AtmosphereActivity.this, AtmosphereActivity.class);
             startActivity(intent);
             finish();
         });
 
         menu.setOnClickListener(View -> {
             Player.button(soundMute);
-            intent = new Intent(AtmosphereActivity.this, MainActivity.class);
+            intent = new Intent(AtmosphereActivity.this, SpaceActivity.class);
             startActivity(intent);
             finish();
         });
@@ -255,7 +260,7 @@ public class AtmosphereActivity extends AppCompatActivity implements View.OnTouc
                 processActionMove(x, y);
                 break;
             case MotionEvent.ACTION_UP:
-                if (!atmosphereView.game_won && !atmosphereView.game_over)
+                if (!atmosphereView.game_won && !atmosphereView.game_over && atmosphereView.last_success_time == 0 && atmosphereView.last_miss_time == 0)
                     processActionUp(x, y);
                 break;
         }

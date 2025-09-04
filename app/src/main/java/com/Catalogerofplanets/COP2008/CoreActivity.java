@@ -118,6 +118,7 @@ public class CoreActivity extends AppCompatActivity implements View.OnTouchListe
         layout_complete.setVisibility(VISIBLE);
         layout_time.setVisibility(INVISIBLE);
         layout_progress.setVisibility(INVISIBLE);
+        layout_canvas.setVisibility(INVISIBLE);
 
         ImageView planet = findViewById(R.id.planet_won);
         TextView coin = findViewById(R.id.coin_won);
@@ -127,16 +128,16 @@ public class CoreActivity extends AppCompatActivity implements View.OnTouchListe
         int group_index = (playLevel - 1) % Player.planet_devider;
         int im = getResources().getIdentifier("cha_" + group_index + "_" + coreView.item_index, "drawable", getPackageName());
         planet.setImageResource(im);
+        coreView.score = playLevel * 10 + 100;
         coin.setText("+" + coreView.score + " " + getResources().getString(R.string.coins));
 
         editor.putString("core_status", "completed");
-        coreView.score = playLevel * 10 + 100;
         editor.putInt("core_coin", coreView.score);
         editor.apply();
 
         go_to_planets.setOnClickListener(View -> {
             Player.button(soundMute);
-            intent = new Intent(CoreActivity.this, SpaceActivity.class);
+            intent = new Intent(CoreActivity.this, StatusActivity.class);
             startActivity(intent);
             finish();
         });
@@ -154,10 +155,11 @@ public class CoreActivity extends AppCompatActivity implements View.OnTouchListe
         layout_lose.setVisibility(VISIBLE);
         layout_time.setVisibility(INVISIBLE);
         layout_progress.setVisibility(INVISIBLE);
+        layout_canvas.setVisibility(INVISIBLE);
 
         ImageView planet = findViewById(R.id.planet_lose);
         TextView coin = findViewById(R.id.coin_lose);
-        Button go_to_planets = findViewById(R.id.go_to_planets_lose);
+        Button go_to_planets_lose = findViewById(R.id.go_to_planets_lose);
         Button menu = findViewById(R.id.menu_lose);
 
         int group_index = (playLevel - 1) % Player.planet_devider;
@@ -165,19 +167,20 @@ public class CoreActivity extends AppCompatActivity implements View.OnTouchListe
         planet.setImageResource(im);
         coin.setText("0 " + getResources().getString(R.string.coins));
 
+        editor.putInt("core_coin", 0);
         editor.putString("core_status", "closed");
         editor.apply();
 
-        go_to_planets.setOnClickListener(View -> {
+        go_to_planets_lose.setOnClickListener(View -> {
             Player.button(soundMute);
-            intent = new Intent(CoreActivity.this, SpaceActivity.class);
+            intent = new Intent(CoreActivity.this, CoreActivity.class);
             startActivity(intent);
             finish();
         });
 
         menu.setOnClickListener(View -> {
             Player.button(soundMute);
-            intent = new Intent(CoreActivity.this, MainActivity.class);
+            intent = new Intent(CoreActivity.this, SpaceActivity.class);
             startActivity(intent);
             finish();
         });

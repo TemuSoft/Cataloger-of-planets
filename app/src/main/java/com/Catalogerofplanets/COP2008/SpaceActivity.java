@@ -107,10 +107,11 @@ public class SpaceActivity extends AppCompatActivity {
     private void process_UI() {
         backward.setVisibility(VISIBLE);
         forward.setVisibility(VISIBLE);
-        if (playLevel < 1) {
+        if (playLevel <= 1) {
             playLevel = 1;
             backward.setVisibility(INVISIBLE);
-        } else if (playLevel > lastLevelActive) {
+        }
+        if (playLevel >= lastLevelActive) {
             playLevel = lastLevelActive;
             forward.setVisibility(INVISIBLE);
         }
@@ -153,11 +154,13 @@ public class SpaceActivity extends AppCompatActivity {
         TextView start = popupView.findViewById(R.id.start);
         TextView alert = popupView.findViewById(R.id.alert);
 
-        planet.setText(getResources().getString(R.string.planet) + "" + index);
+
+        planet.setText(getResources().getString(R.string.planet) + " " + index);
         mode.setText(type);
-        award.setText(getResources().getString(R.string.award) + "" + award_coin);
+        award.setText(getResources().getString(R.string.award) + " " + award_coin);
 
         boolean is_valid = item_one_purchased + item_two_purchased + item_three_purchased >= index;
+        is_valid = index == 4 || is_valid;
         if (is_valid) {
             start.setTextColor(getResources().getColor(R.color.white));
             start.setBackgroundResource(R.drawable.blue_rect);
@@ -172,6 +175,7 @@ public class SpaceActivity extends AppCompatActivity {
 
         start.setOnClickListener(View -> {
             editor.putInt("playLevel", playLevel);
+            editor.putInt("item_index", index - 1);
             editor.apply();
 
             intent = new Intent(SpaceActivity.this, StatusActivity.class);
@@ -179,7 +183,7 @@ public class SpaceActivity extends AppCompatActivity {
         });
         alert.setVisibility(VISIBLE);
 
-        PopupWindow popupWindow = new PopupWindow(popupView, android.widget.LinearLayout.LayoutParams.WRAP_CONTENT, android.widget.LinearLayout.LayoutParams.WRAP_CONTENT, true);
+        PopupWindow popupWindow = new PopupWindow(popupView, 550, android.widget.LinearLayout.LayoutParams.WRAP_CONTENT, true);
 
         popupWindow.setOutsideTouchable(true);
         popupWindow.setFocusable(true);

@@ -6,11 +6,13 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -77,7 +79,7 @@ public class StatusActivity extends AppCompatActivity {
         coin = findViewById(R.id.coin);
 
         back.setOnClickListener(View -> {
-            intent = new Intent(StatusActivity.this, MainActivity.class);
+            intent = new Intent(StatusActivity.this, SpaceActivity.class);
             startActivity(intent);
             finish();
         });
@@ -89,9 +91,9 @@ public class StatusActivity extends AppCompatActivity {
         int p = getResources().getIdentifier("cha_" + group_index + "_" + item_index, "drawable", getPackageName());
         planet.setImageResource(p);
 
-        name.setText("Planet " + playLevel + "+" + item_index);
+        name.setText("Planet " + playLevel + "" + item_index);
 
-        get_value();
+        set_UI();
     }
 
     private void get_datas() {
@@ -104,7 +106,7 @@ public class StatusActivity extends AppCompatActivity {
         playLevel = sharedPreferences.getInt("playLevel", 1);
     }
 
-    private void get_value() {
+    private void set_UI() {
         atmosphere_coin = sharedPreferences.getInt("atmosphere_coin", 0);
         ground_coin = sharedPreferences.getInt("ground_coin", 0);
         core_coin = sharedPreferences.getInt("core_coin", 0);
@@ -114,68 +116,104 @@ public class StatusActivity extends AppCompatActivity {
         core_status = sharedPreferences.getString("core_status", "ready");
 
 
-        set_UI();
-    }
-
-    private void set_UI() {
-        award_one.setText(getResources().getString(R.string.award) + "" + atmosphere_coin);
-        award_two.setText(getResources().getString(R.string.award) + "" + ground_coin);
-        award_three.setText(getResources().getString(R.string.award) + "" + core_coin);
+        award_one.setText(getResources().getString(R.string.award) + " " + atmosphere_coin);
+        award_two.setText(getResources().getString(R.string.award) + " " + ground_coin);
+        award_three.setText(getResources().getString(R.string.award) + " " + core_coin);
 
         coin.setText(getResources().getString(R.string.coins) + " " + (all_coin + atmosphere_coin + ground_coin + core_coin));
 
-        if (atmosphere_status.equals("ready")) {
+        if (atmosphere_status.equals("completed")) {
             layout_one.setBackgroundResource(R.drawable.green_rect);
             status_one.setText(getResources().getString(R.string.ready));
             one_play_again.setBackgroundResource(R.drawable.green_rect);
-            text_one.setTextColor(getResources().getColor(R.color.green));
-        } else if (atmosphere_status.equals("completed")) {
+            status_one.setTextColor(getResources().getColor(R.color.green));
+            text_one.setTextColor(getResources().getColor(R.color.white));
+            one_play_again.setTextColor(getResources().getColor(R.color.white));
+        } else if (atmosphere_status.equals("ready")) {
             layout_one.setBackgroundResource(R.drawable.gray_rect);
             status_one.setText(getResources().getString(R.string.completed));
             one_play_again.setBackgroundResource(R.drawable.gray_rect);
+            status_one.setTextColor(getResources().getColor(R.color.white));
             text_one.setTextColor(getResources().getColor(R.color.white));
+            one_play_again.setTextColor(getResources().getColor(R.color.white));
+            one_play_again.setText(getResources().getString(R.string.play));
         } else {
             layout_one.setBackgroundResource(R.drawable.dark_rect);
             status_one.setText(getResources().getString(R.string.closed));
             one_play_again.setBackgroundResource(R.drawable.dark_rect);
+            status_one.setTextColor(getResources().getColor(R.color.red));
             text_one.setTextColor(getResources().getColor(R.color.gray));
+            one_play_again.setTextColor(getResources().getColor(R.color.gray));
         }
+        one_play_again.setOnClickListener(View -> {
+            Player.button(soundMute);
 
+            intent = new Intent(StatusActivity.this, AtmosphereActivity.class);
+            startActivity(intent);
+            finish();
+        });
 
-        if (ground_status.equals("ready")) {
+        if (ground_status.equals("completed")) {
             layout_two.setBackgroundResource(R.drawable.green_rect);
             status_two.setText(getResources().getString(R.string.ready));
             two_play_again.setBackgroundResource(R.drawable.green_rect);
-            text_two.setTextColor(getResources().getColor(R.color.green));
-        } else if (ground_status.equals("completed")) {
+            status_two.setTextColor(getResources().getColor(R.color.green));
+            text_two.setTextColor(getResources().getColor(R.color.white));
+            two_play_again.setTextColor(getResources().getColor(R.color.white));
+        } else if (ground_status.equals("ready")) {
             layout_two.setBackgroundResource(R.drawable.gray_rect);
             status_two.setText(getResources().getString(R.string.completed));
             two_play_again.setBackgroundResource(R.drawable.gray_rect);
+            status_two.setTextColor(getResources().getColor(R.color.white));
             text_two.setTextColor(getResources().getColor(R.color.white));
+            two_play_again.setTextColor(getResources().getColor(R.color.white));
+            two_play_again.setText(getResources().getString(R.string.play));
         } else {
             layout_two.setBackgroundResource(R.drawable.dark_rect);
             status_two.setText(getResources().getString(R.string.closed));
             two_play_again.setBackgroundResource(R.drawable.dark_rect);
+            status_two.setTextColor(getResources().getColor(R.color.red));
             text_two.setTextColor(getResources().getColor(R.color.gray));
+            two_play_again.setTextColor(getResources().getColor(R.color.gray));
         }
+        two_play_again.setOnClickListener(View -> {
+            Player.button(soundMute);
 
+            intent = new Intent(StatusActivity.this, GroundActivity.class);
+            startActivity(intent);
+            finish();
+        });
 
-        if (core_status.equals("ready")) {
+        if (core_status.equals("completed")) {
             layout_three.setBackgroundResource(R.drawable.green_rect);
             status_three.setText(getResources().getString(R.string.ready));
             three_play_again.setBackgroundResource(R.drawable.green_rect);
-            text_three.setTextColor(getResources().getColor(R.color.green));
-        } else if (core_status.equals("completed")) {
+            status_three.setTextColor(getResources().getColor(R.color.green));
+            text_three.setTextColor(getResources().getColor(R.color.white));
+            three_play_again.setTextColor(getResources().getColor(R.color.white));
+        } else if (core_status.equals("ready")) {
             layout_three.setBackgroundResource(R.drawable.gray_rect);
             status_three.setText(getResources().getString(R.string.completed));
             three_play_again.setBackgroundResource(R.drawable.gray_rect);
+            status_three.setTextColor(getResources().getColor(R.color.white));
             text_three.setTextColor(getResources().getColor(R.color.white));
+            three_play_again.setTextColor(getResources().getColor(R.color.white));
+            three_play_again.setText(getResources().getString(R.string.play));
         } else {
             layout_three.setBackgroundResource(R.drawable.dark_rect);
             status_three.setText(getResources().getString(R.string.closed));
             three_play_again.setBackgroundResource(R.drawable.dark_rect);
+            status_three.setTextColor(getResources().getColor(R.color.red));
             text_three.setTextColor(getResources().getColor(R.color.gray));
+            three_play_again.setTextColor(getResources().getColor(R.color.gray));
         }
+        three_play_again.setOnClickListener(View -> {
+            Player.button(soundMute);
+
+            intent = new Intent(StatusActivity.this, CoreActivity.class);
+            startActivity(intent);
+            finish();
+        });
 
         if (atmosphere_status.equals("completed") && ground_status.equals("completed") && core_status.equals("completed")) {
             layout_game_done.setVisibility(VISIBLE);
@@ -185,7 +223,7 @@ public class StatusActivity extends AppCompatActivity {
                 editor.putInt("coin", all_coin + atmosphere_coin + ground_coin + core_coin);
                 editor.apply();
 
-                intent = new Intent(StatusActivity.this, StoreActivity.class);
+                intent = new Intent(StatusActivity.this, SpaceActivity.class);
                 startActivity(intent);
                 finish();
             });
@@ -202,8 +240,6 @@ public class StatusActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        get_value();
-        get_datas();
 
 //        isMute = sharedPreferences.getBoolean("isMute", false);
 //        if (!isMute)

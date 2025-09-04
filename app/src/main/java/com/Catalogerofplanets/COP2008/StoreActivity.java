@@ -98,14 +98,12 @@ public class StoreActivity extends AppCompatActivity {
             Button buy = one_store.findViewById(R.id.buy);
 
 
-            name.setText(names[i]);
+            name.setText(names[i] + " (" + purchased[i] + ")");
             store.setImageResource(images[i]);
             coin.setText(getResources().getString(R.string.cost_coins) + " " + r_c[i]);
-            p_name.setText(o_names[i] + "(" + purchased[i] + ")");
+            p_name.setText(o_names[i]);
 
-            if (status[i]) {
-                buy.setVisibility(GONE);
-            } else if (r_c[i] <= all_coin) {
+            if (r_c[i] <= all_coin) {
                 buy.setBackgroundResource(R.drawable.green_rect);
                 buy.setBackgroundColor(getResources().getColor(R.color.white));
 
@@ -125,7 +123,7 @@ public class StoreActivity extends AppCompatActivity {
                 });
             } else {
                 buy.setBackgroundResource(R.drawable.dark_rect);
-                buy.setBackgroundColor(getResources().getColor(R.color.gray));
+                buy.setTextColor(getResources().getColor(R.color.gray));
             }
 
 
