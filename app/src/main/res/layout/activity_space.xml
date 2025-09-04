@@ -70,12 +70,30 @@
                 </LinearLayout>
             </LinearLayout>
 
-            <ImageView
-                android:id="@+id/back"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:src="@drawable/back_large" />
+                android:layout_marginTop="10dp">
+
+                <ImageView
+                    android:id="@+id/back"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/back_large" />
+
+                <Space
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/shop"
+                    android:layout_width="100dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/green_rect"
+                    android:text="@string/shop"
+                    android:theme="@style/text14Theme" />
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"

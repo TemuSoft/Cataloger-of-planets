@@ -158,6 +158,7 @@ public class AtmosphereActivity extends AppCompatActivity implements View.OnTouc
         coin.setText("+" + atmosphereView.score + " " + getResources().getString(R.string.coins));
 
         editor.putString("atmosphere_status", "completed");
+        atmosphereView.score = playLevel * 10 + 100;
         editor.putInt("atmosphere_coin", atmosphereView.score);
         editor.apply();
 

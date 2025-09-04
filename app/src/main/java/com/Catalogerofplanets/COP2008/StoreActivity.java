@@ -59,7 +59,7 @@ public class StoreActivity extends AppCompatActivity {
 
 
         back.setOnClickListener(View -> {
-            intent = new Intent(StoreActivity.this, MainActivity.class);
+            intent = new Intent(StoreActivity.this, SpaceActivity.class);
             startActivity(intent);
             finish();
         });

@@ -18,7 +18,7 @@ public class StatusActivity extends AppCompatActivity {
     private ImageView back, planet;
     private TextView name, coin, planets_explored;
     private LinearLayout layout_game_done;
-    private Button next, shop;
+    private Button done;
 
     private TextView text_one, one_play_again, award_one, status_one;
     private TextView text_two, two_play_again, award_two, status_two;
@@ -38,8 +38,6 @@ public class StatusActivity extends AppCompatActivity {
     private int atmosphere_coin, ground_coin, core_coin;
     private String atmosphere_status, ground_status, core_status;
     private int lastLevelActive, playLevel;
-    private int item_one_purchased, item_two_purchased, item_three_purchased;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,8 +51,7 @@ public class StatusActivity extends AppCompatActivity {
 
         back = findViewById(R.id.back);
         layout_game_done = findViewById(R.id.layout_game_done);
-        shop = findViewById(R.id.shop);
-        next = findViewById(R.id.next);
+        done = findViewById(R.id.done);
 
         layout_one = findViewById(R.id.layout_one);
         text_one = findViewById(R.id.text_one);
@@ -105,9 +102,6 @@ public class StatusActivity extends AppCompatActivity {
         item_index = sharedPreferences.getInt("item_index", 0);
         lastLevelActive = sharedPreferences.getInt("lastLevelActive", 1);
         playLevel = sharedPreferences.getInt("playLevel", 1);
-        item_one_purchased = sharedPreferences.getInt("item_one_purchased", 0);
-        item_two_purchased = sharedPreferences.getInt("item_two_purchased", 0);
-        item_three_purchased = sharedPreferences.getInt("item_three_purchased", 0);
     }
 
     private void get_value() {
@@ -186,35 +180,14 @@ public class StatusActivity extends AppCompatActivity {
         if (atmosphere_status.equals("completed") && ground_status.equals("completed") && core_status.equals("completed")) {
             layout_game_done.setVisibility(VISIBLE);
 
-            shop.setOnClickListener(View -> {
+            done.setOnClickListener(View -> {
+                editor.putBoolean("explored_" + playLevel + "" + item_index, true);
                 editor.putInt("coin", all_coin + atmosphere_coin + ground_coin + core_coin);
                 editor.apply();
 
                 intent = new Intent(StatusActivity.this, StoreActivity.class);
                 startActivity(intent);
                 finish();
-            });
-
-
-            int purchased = item_one_purchased + item_two_purchased + item_three_purchased;
-            if (lastLevelActive < purchased) {
-                next.setEnabled(false);
-                next.setAlpha(0.5F);
-            } else {
-                next.setEnabled(true);
-                next.setAlpha(1F);
-            }
-
-            next.setOnClickListener(View -> {
-                playLevel++;
-                if (playLevel > lastLevelActive)
-                    lastLevelActive = playLevel;
-
-                editor.putInt("lastLevelActive", lastLevelActive);
-                editor.putInt("playLevel", playLevel);
-                editor.putInt("coin", all_coin + atmosphere_coin + ground_coin + core_coin);
-                editor.apply();
-
             });
         }
     }

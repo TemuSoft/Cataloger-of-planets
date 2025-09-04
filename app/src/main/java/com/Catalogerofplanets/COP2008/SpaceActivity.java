@@ -1,5 +1,6 @@
 package com.Catalogerofplanets.COP2008;
 
+import static android.view.View.GONE;
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 
@@ -9,6 +10,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
@@ -19,6 +21,7 @@ import androidx.appcompat.app.AppCompatActivity;
 public class SpaceActivity extends AppCompatActivity {
     private ImageView back, backward, forward;
     private TextView chapter, coin, planets_explored;
+    private Button shop;
 
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
@@ -29,8 +32,11 @@ public class SpaceActivity extends AppCompatActivity {
     private LayoutInflater inflate;
     private Intent intent;
     private int lastLevelActive, playLevel;
-    private int all_coin;
+    private int all_coin, award_coin;
     private int[][] images = new int[][]{{R.drawable.cha_0_0, R.drawable.cha_0_1, R.drawable.cha_0_2, R.drawable.cha_0_3}, {R.drawable.cha_1_0, R.drawable.cha_1_1, R.drawable.cha_1_2, R.drawable.cha_1_3}, {R.drawable.cha_2_0, R.drawable.cha_2_1, R.drawable.cha_2_2, R.drawable.cha_2_3}, {R.drawable.cha_3_0, R.drawable.cha_3_1, R.drawable.cha_3_2, R.drawable.cha_3_3},};
+
+    private int item_one_purchased, item_two_purchased, item_three_purchased;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +50,11 @@ public class SpaceActivity extends AppCompatActivity {
         all_coin = sharedPreferences.getInt("coin", 0);
         lastLevelActive = sharedPreferences.getInt("lastLevelActive", 1);
         playLevel = sharedPreferences.getInt("playLevel", 1);
+        item_one_purchased = sharedPreferences.getInt("item_one_purchased", 0);
+        item_two_purchased = sharedPreferences.getInt("item_two_purchased", 0);
+        item_three_purchased = sharedPreferences.getInt("item_three_purchased", 0);
+
+        award_coin = (playLevel * 10 + 100) * 3;
 
         setContentView(R.layout.activity_space);
 
@@ -54,6 +65,8 @@ public class SpaceActivity extends AppCompatActivity {
         chapter = findViewById(R.id.chapter);
         planets_explored = findViewById(R.id.planets_explored);
         coin = findViewById(R.id.coin);
+
+        shop = findViewById(R.id.shop);
 
         back.setOnClickListener(View -> {
             intent = new Intent(SpaceActivity.this, MainActivity.class);
@@ -69,6 +82,15 @@ public class SpaceActivity extends AppCompatActivity {
         forward.setOnClickListener(View -> {
             playLevel++;
             process_UI();
+        });
+
+        shop.setOnClickListener(View -> {
+            Player.button(soundMute);
+
+            intent = new Intent(SpaceActivity.this, StoreActivity.class);
+            startActivity(intent);
+            finish();
+
         });
 
         editor.putInt("atmosphere_coin", 0);
@@ -117,17 +139,45 @@ public class SpaceActivity extends AppCompatActivity {
         ImageView info3 = findViewById(R.id.info3);
         ImageView info4 = findViewById(R.id.info4);
 
-        info1.setOnClickListener(v -> showPopup(v, "This is information about Planet 1"));
-        info2.setOnClickListener(v -> showPopup(v, "This is information about Planet 2"));
-        info3.setOnClickListener(v -> showPopup(v, "This is information about Planet 3"));
-        info4.setOnClickListener(v -> showPopup(v, "This is information about Planet 4"));
-
-
+        info1.setOnClickListener(v -> showPopup(v, "Easy", 1));
+        info2.setOnClickListener(v -> showPopup(v, "Normal", 2));
+        info3.setOnClickListener(v -> showPopup(v, "Difficult", 3));
+        info4.setOnClickListener(v -> showPopup(v, "Test", 4));
     }
 
-    private void showPopup(View anchorView, String message) {
+    private void showPopup(View anchorView, String type, int index) {
         View popupView = LayoutInflater.from(this).inflate(R.layout.popup_info, null);
+        TextView planet = popupView.findViewById(R.id.planet);
+        TextView mode = popupView.findViewById(R.id.mode);
+        TextView award = popupView.findViewById(R.id.award);
+        TextView start = popupView.findViewById(R.id.start);
+        TextView alert = popupView.findViewById(R.id.alert);
 
+        planet.setText(getResources().getString(R.string.planet) + "" + index);
+        mode.setText(type);
+        award.setText(getResources().getString(R.string.award) + "" + award_coin);
+
+        boolean is_valid = item_one_purchased + item_two_purchased + item_three_purchased >= index;
+        if (is_valid) {
+            start.setTextColor(getResources().getColor(R.color.white));
+            start.setBackgroundResource(R.drawable.blue_rect);
+            start.setEnabled(true);
+            alert.setVisibility(GONE);
+        } else {
+            start.setTextColor(getResources().getColor(R.color.gray));
+            start.setBackgroundResource(R.drawable.dark_rect);
+            start.setEnabled(false);
+            alert.setVisibility(VISIBLE);
+        }
+
+        start.setOnClickListener(View -> {
+            editor.putInt("playLevel", playLevel);
+            editor.apply();
+
+            intent = new Intent(SpaceActivity.this, StatusActivity.class);
+            startActivity(intent);
+        });
+        alert.setVisibility(VISIBLE);
 
         PopupWindow popupWindow = new PopupWindow(popupView, android.widget.LinearLayout.LayoutParams.WRAP_CONTENT, android.widget.LinearLayout.LayoutParams.WRAP_CONTENT, true);
 

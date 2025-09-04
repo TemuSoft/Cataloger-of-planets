@@ -130,6 +130,7 @@ public class CoreActivity extends AppCompatActivity implements View.OnTouchListe
         coin.setText("+" + coreView.score + " " + getResources().getString(R.string.coins));
 
         editor.putString("core_status", "completed");
+        coreView.score = playLevel * 10 + 100;
         editor.putInt("core_coin", coreView.score);
         editor.apply();
 

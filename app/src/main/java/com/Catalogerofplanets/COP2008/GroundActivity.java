@@ -129,6 +129,7 @@ public class GroundActivity extends AppCompatActivity implements View.OnTouchLis
         coin.setText("+" + groundView.score + " " + getResources().getString(R.string.coins));
 
         editor.putString("ground_status", "completed");
+        groundView.score = playLevel * 10 + 100;
         editor.putInt("ground_coin", groundView.score);
         editor.apply();
 
