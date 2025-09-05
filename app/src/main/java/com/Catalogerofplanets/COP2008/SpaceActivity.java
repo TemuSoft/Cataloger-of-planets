@@ -197,7 +197,6 @@ public class SpaceActivity extends AppCompatActivity {
             intent = new Intent(SpaceActivity.this, StatusActivity.class);
             startActivity(intent);
         });
-        alert.setVisibility(VISIBLE);
 
         PopupWindow popupWindow = new PopupWindow(popupView, 550, android.widget.LinearLayout.LayoutParams.WRAP_CONTENT, true);
 

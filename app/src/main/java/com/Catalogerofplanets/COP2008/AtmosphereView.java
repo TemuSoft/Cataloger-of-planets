@@ -33,6 +33,7 @@ public class AtmosphereView extends View{
     ArrayList<Bitmap> atoms = new ArrayList<>();
     int p_x, p_y, p_wh;
     int padding, at_wh;
+    ArrayList<Long> last_time = new ArrayList<>();
     ArrayList<ArrayList<Integer>> atoms_data = new ArrayList<>();
     int[] progress_value = new int[]{0, 0, 0};
     long last_success_time, last_miss_time;
@@ -116,6 +117,8 @@ public class AtmosphereView extends View{
                 data.add(y);
                 data.add(index);
                 atoms_data.add(data);
+
+                last_time.add(System.currentTimeMillis());
             }
         }
     }
@@ -156,6 +159,13 @@ public class AtmosphereView extends View{
     }
 
     public void update() {
+        for (int i = 0; i < last_time.size(); i++) {
+            if (last_time.get(i) + 10000 < System.currentTimeMillis() && atoms_data.get(i).get(2) == 3) {
+                int index = random.nextInt(atoms.size() - 1);
+                atoms_data.get(i).set(2, index);
+                last_time.set(i, System.currentTimeMillis());
+            }
+        }
 
         if (last_miss_time != 0 && last_miss_time + 1000 < System.currentTimeMillis()){
             failure_index = -1;
@@ -166,6 +176,7 @@ public class AtmosphereView extends View{
             last_success_time = 0;
             int index = random.nextInt(atoms.size());
             atoms_data.get(success_index).set(2, index);
+            last_time.set(success_index, System.currentTimeMillis());
             success_index = -1;
         }
 
